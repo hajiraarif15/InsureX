@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "CPD Dashboard";
+}
+
+<h2 class="mb-4">CPD Dashboard</h2>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Total Claims</h5>
+                <p class="card-text fs-3">@ViewBag.TotalClaims</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Pending Claims</h5>
+                <p class="card-text fs-3">@ViewBag.PendingClaims</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Approved Claims</h5>
+                <p class="card-text fs-3">@ViewBag.ApprovedClaims</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Rejected Claims</h5>
+                <p class="card-text fs-3">@ViewBag.RejectedClaims</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <a href="@Url.Action("ManageClaims")" class="btn btn-primary w-100 py-3 shadow-sm">
+            Manage Pending Claims
+        </a>
+    </div>
+    <div class="col-md-6">
+        <a href="@Url.Action("ProcessedClaims")" class="btn btn-success w-100 py-3 shadow-sm">
+            View Processed Claims
+        </a>
+    </div>
+</div>

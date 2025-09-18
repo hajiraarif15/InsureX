@@ -1,0 +1,63 @@
+﻿@model IEnumerable<InSureX.Models.Claim>
+
+@{
+    ViewData["Title"] = "Processed Claims";
+}
+
+<h2 class="mb-4">Processed Claims</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No processed claims found.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>Claim ID</th>
+                    <th>Employee</th>
+                    <th>Details</th>
+                    <th>Total Amount</th>
+                    <th>Approved Amount</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th>Bill File</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach (var claim in Model)
+                {
+                    <tr class="@(
+                        claim.Status == "Approved" ? "table-success" :
+                        claim.Status == "Rejected" ? "table-danger" : ""
+                                        )">
+                    <td>@claim.ClaimId</td>
+                    <td>@(claim.Employee?.FullName ?? claim.Employee?.Email ?? "Unknown")</td>
+                    <td>@claim.Details</td>
+                    <td>₹@claim.Amount</td>
+                    <td>₹@(claim.ApprovedAmount ?? 0)</td>
+                    <td>
+                        <span class="badge @(claim.Status == "Approved" ? "bg-success" : "bg-danger")">
+                            @claim.Status
+                        </span>
+                    </td>
+                    <td>@claim.SubmittedDate.ToString("dd-MMM-yyyy")</td>
+                    <td>
+                    @if (!string.IsNullOrEmpty(claim.BillFilePath))
+                            {
+                                <a href="@claim.BillFilePath" target="_blank" class="btn btn-sm btn-primary mb-1">View</a>
+                                <a href="@Url.Action("DownloadFile", "CPD", new { id = claim.ClaimId })" class="btn btn-sm btn-secondary">Download</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No File</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

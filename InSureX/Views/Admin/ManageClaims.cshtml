@@ -1,0 +1,92 @@
+﻿@model IEnumerable<InSureX.Models.Claim>
+
+@{
+    ViewData["Title"] = "Manage Claims";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">📝 Manage Claims</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success shadow-sm">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger shadow-sm">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-hover shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Claim ID</th>
+            <th>Employee</th>
+            <th>Details</th>
+            <th>Total Amount</th>
+            <th>Approved Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Bill File</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var claim in Model)
+        {
+            <tr>
+                <td>@claim.ClaimId</td>
+                <td>@(claim.Employee?.FullName ?? claim.Employee?.Email ?? claim.Employee?.UserName ?? "Unknown")</td>
+                <td>@claim.Details</td>
+                <td>₹@string.Format("{0:N2}", claim.Amount)</td>
+                <td>₹@string.Format("{0:N2}", claim.ApprovedAmount ?? 0)</td>
+                <td>
+                    @if (claim.Status == "Pending")
+                    {
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    }
+                    else if (claim.Status == "Approved")
+                    {
+                        <span class="badge bg-success">Approved</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Rejected</span>
+                    }
+                </td>
+                <td>@claim.SubmittedDate.ToString("dd-MMM-yyyy")</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(claim.BillFilePath))
+                    {
+                        <a asp-action="DownloadFile" asp-route-id="@claim.ClaimId" class="btn btn-sm btn-secondary mb-1">Download</a>
+                        <a href="@claim.BillFilePath" target="_blank" class="btn btn-sm btn-primary">View</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No File</span>
+                    }
+                </td>
+                <td>
+                    @if (claim.Status == "Pending")
+                    {
+                        <form asp-action="ApproveClaim" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@claim.ClaimId" />
+                            <input type="number" step="0.01" name="approvedAmount"
+                                   placeholder="Enter amount"
+                                   class="form-control form-control-sm mb-1" required />
+                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                        </form>
+
+                        <form asp-action="RejectClaim" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@claim.ClaimId" />
+                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

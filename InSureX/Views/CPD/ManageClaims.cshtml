@@ -1,0 +1,64 @@
+﻿@model IEnumerable<InSureX.Models.Claim>
+
+@{
+    ViewData["Title"] = "Manage Claims";
+}
+
+<h2 class="mb-3">Pending Claims</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No pending claims found.</div>
+}
+else
+{
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Claim ID</th>
+                <th>Employee</th>
+                <th>Details</th>
+                <th>Total Amount</th>
+                <th>Date Submitted</th>
+                <th>Bill File</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in Model)
+            {
+                <tr>
+                    <td>@claim.ClaimId</td>
+                    <td>@(claim.Employee?.FullName ?? claim.Employee?.Email ?? "Unknown")</td>
+                    <td>@claim.Details</td>
+                    <td>₹@claim.Amount</td>
+                    <td>@claim.SubmittedDate.ToString("dd-MMM-yyyy")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(claim.BillFilePath))
+                        {
+                            <a href="@claim.BillFilePath" target="_blank" class="btn btn-sm btn-primary mb-1">View</a>
+                            <a href="@Url.Action("DownloadFile", "CPD", new { id = claim.ClaimId })" class="btn btn-sm btn-secondary">Download</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No File</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="d-grid gap-1">
+                            <form asp-action="ApproveClaim" method="post">
+                                <input type="hidden" name="id" value="@claim.ClaimId" />
+                                <input type="number" name="approvedAmount" class="form-control form-control-sm mb-1" placeholder="Approved Amount" required />
+                                <button type="submit" class="btn btn-success btn-sm w-100">Approve</button>
+                            </form>
+                            <form asp-action="RejectClaim" method="post">
+                                <input type="hidden" name="id" value="@claim.ClaimId" />
+                                <button type="submit" class="btn btn-danger btn-sm w-100">Reject</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

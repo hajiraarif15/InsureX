@@ -1,0 +1,131 @@
+﻿@model IEnumerable<InSureX.Models.Claim>
+
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var status = Context.Request.Query["status"].ToString();
+    var employeeEmail = Context.Request.Query["employeeEmail"].ToString();
+    var startDate = Context.Request.Query["startDate"].ToString();
+    var endDate = Context.Request.Query["endDate"].ToString();
+}
+
+<h2 class="mb-4">Claims Reports</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="" selected="@(string.IsNullOrEmpty(status) ? "selected" : null)">All Status</option>
+            <option value="Pending" selected="@(status == "Pending" ? "selected" : null)">Pending</option>
+            <option value="Approved" selected="@(status == "Approved" ? "selected" : null)">Approved</option>
+            <option value="Rejected" selected="@(status == "Rejected" ? "selected" : null)">Rejected</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <input type="text" name="employeeEmail" value="@employeeEmail" class="form-control" placeholder="Employee email" />
+    </div>
+
+    <div class="col-md-2">
+        <input type="date" name="startDate" value="@startDate" class="form-control" />
+    </div>
+
+    <div class="col-md-2">
+        <input type="date" name="endDate" value="@endDate" class="form-control" />
+    </div>
+
+    <div class="col-md-2 d-flex">
+        <button type="submit" class="btn btn-primary me-2">Filter</button>
+        <a asp-action="Reports" asp-route-export="csv" class="btn btn-outline-secondary">Export CSV</a>
+    </div>
+</form>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card shadow-sm text-white bg-primary mb-3">
+            <div class="card-header">Total Claims</div>
+            <div class="card-body">
+                <h5 class="card-title">@ViewBag.TotalClaims</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-white bg-success mb-3">
+            <div class="card-header">Approved Claims</div>
+            <div class="card-body">
+                <h5 class="card-title">@ViewBag.ApprovedClaims</h5>
+                <p class="mb-0">₹@string.Format("{0:N2}", ViewBag.TotalApproved)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-white bg-warning mb-3">
+            <div class="card-header">Pending Claims</div>
+            <div class="card-body">
+                <h5 class="card-title">@ViewBag.PendingClaims</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-white bg-danger mb-3">
+            <div class="card-header">Rejected Claims</div>
+            <div class="card-body">
+                <h5 class="card-title">@ViewBag.RejectedClaims</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <strong>Total Claimed Amount: </strong> ₹@string.Format("{0:N2}", ViewBag.TotalAmount) <br />
+    <strong>Total Approved Amount: </strong> ₹@string.Format("{0:N2}", ViewBag.TotalApproved)
+</div>
+
+<table class="table table-striped table-bordered mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Claim ID</th>
+            <th>Employee</th>
+            <th>Email</th>
+            <th>Details</th>
+            <th>Amount</th>
+            <th>Approved</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Bill</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.ClaimId</td>
+                <td>
+                    @(c.Employee?.FullName ?? "Unknown")
+                    <br />
+                    <small class="text-muted">
+                        @(c.Employee != null ? $"EMP{c.Employee.EmployeeNumber:000}" : "EMP000")
+                    </small>
+
+                </td>
+                <td>@(c.Employee?.Email ?? "-")</td>
+                <td>@c.Details</td>
+                <td>₹@string.Format("{0:N2}", c.Amount)</td>
+                <td>₹@string.Format("{0:N2}", c.ApprovedAmount ?? 0)</td>
+                <td>@c.Status</td>
+                <td>@c.SubmittedDate.ToString("dd-MMM-yyyy")</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(c.BillFilePath))
+                    {
+                        <a asp-action="DownloadFile" asp-route-id="@c.ClaimId" class="btn btn-sm btn-secondary">Download</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="AdminDashboard" class="btn btn-secondary mt-3">Back to Dashboard</a>

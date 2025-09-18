@@ -1,0 +1,64 @@
+﻿@model InSureX.Models.Claim
+@{
+    ViewData["Title"] = "Submit New Claim";
+}
+
+<h2 class="mb-4">Submit New Claim</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow p-4">
+    
+    <form asp-action="CreateClaim" method="post" enctype="multipart/form-data">
+        
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Details" class="form-label">Claim Details</label>
+            <textarea asp-for="Details" class="form-control" rows="4" placeholder="Enter details (Medicines, Tests, Surgery)"></textarea>
+            <span asp-validation-for="Details" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Amount" class="form-label">Total Amount</label>
+            <input asp-for="Amount" class="form-control" type="number" step="0.01" placeholder="Enter total claim amount" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="HospitalName" class="form-label">Hospital Name</label>
+            <input asp-for="HospitalName" class="form-control" placeholder="Enter hospital name" />
+            <span asp-validation-for="HospitalName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DoctorName" class="form-label">Doctor Name</label>
+            <input asp-for="DoctorName" class="form-control" placeholder="Enter doctor’s name" />
+            <span asp-validation-for="DoctorName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TreatmentDate" class="form-label">Treatment Date</label>
+            <input asp-for="TreatmentDate" type="date" class="form-control" />
+            <span asp-validation-for="TreatmentDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Upload Bill (optional)</label>
+            <input type="file" name="BillFile" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Claim</button>
+        <a asp-action="EmployeeDashboard" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

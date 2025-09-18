@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container py-5 text-center">
+    <!-- Hero Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <h1 class="display-4 fw-bold">Welcome to InSureX</h1>
+            <p class="lead text-muted">
+                Manage, track, and approve medical claims efficiently, anytime, anywhere.
+            </p>
+
+            @* Login / Dashboard Button depending on authentication *@
+            @if (User.Identity.IsAuthenticated)
+            {
+                @if (User.IsInRole("Employee"))
+                {
+                    <a class="btn btn-primary btn-lg mt-3" asp-controller="Employee" asp-action="EmployeeDashboard">
+                        Go to Dashboard
+                    </a>
+                }
+                else if (User.IsInRole("CPD"))
+                {
+                    <a class="btn btn-primary btn-lg mt-3" asp-controller="CPD" asp-action="Index">
+                        Go to CPD Dashboard
+                    </a>
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    <a class="btn btn-primary btn-lg mt-3" asp-controller="Admin" asp-action="Index">
+                        Go to Admin Dashboard
+                    </a>
+                }
+            }
+            else
+            {
+                <a class="btn btn-primary btn-lg mt-3" asp-area="Identity" asp-page="/Account/Login">
+                    Login
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Features / About Section -->
+    <div class="row text-center">
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <i class="bi bi-file-earmark-medical display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Submit Claims</h5>
+                    <p class="card-text text-muted">Easily submit your medical expenses for reimbursement.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <i class="bi bi-clipboard-check display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Track Approvals</h5>
+                    <p class="card-text text-muted">Check the status of your submitted claims anytime.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <i class="bi bi-cash-stack display-4 text-warning mb-3"></i>
+                    <h5 class="card-title">Payments</h5>
+                    <p class="card-text text-muted">View approved payments and their status quickly.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <i class="bi bi-shield-lock display-4 text-danger mb-3"></i>
+                    <h5 class="card-title">Secure Access</h5>
+                    <p class="card-text text-muted">Your data is safe with role-based secure access.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
