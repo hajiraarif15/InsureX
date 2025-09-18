@@ -70,7 +70,7 @@ InSureX/
    ```bash
    git clone https://github.com/your-username/InSureX.git
    cd InSureX
-````
+
 
 2. **Update Database Connection**
 
