@@ -115,21 +115,3 @@ When the application starts for the first time, roles are created automatically:
 
 
 
-🔐 Default Roles & Users
-
-When the application starts for the first time, roles are created automatically:
-
-Admin → Full access
-
-Email: admin@insurex.com
-
-Password: Admin@123
-
-CPD (Claims Processing Department) → Claim management
-
-Email: cpd@insurex.com
-
-Password: Cpd@123
-
-Employee → Claim submission (register a new user manually)
-
